@@ -1,5 +1,8 @@
 package simpledb.storage;
 
+import org.w3c.dom.html.HTMLDirectoryElement;
+import simpledb.common.Type;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +16,9 @@ import java.util.Iterator;
 public class Tuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public ArrayList<Field> storageList=new ArrayList<Field>();
+    private ArrayList<Type> storageList=new ArrayList<Type>();
+    private ArrayList<Field> fieldList=new ArrayList<Field>();
+    private TupleDesc td;
     /**
      * Create a new tuple with the specified schema (type).
      *
@@ -22,15 +27,17 @@ public class Tuple implements Serializable {
      *            instance with at least one field.
      */
     public Tuple(TupleDesc td) {
-        // some code goes here
+        for (TupleDesc.TDItem t:td.storageList) {
+            storageList.add(t.fieldType);
+        }
+        this.td=td;
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        // some code goes here
-        return null;
+        return this.td;
     }
 
     /**
@@ -39,9 +46,9 @@ public class Tuple implements Serializable {
      */
     public RecordId getRecordId() {
         // some code goes here
-        return null;
+        return this.rid;
     }
-
+    private RecordId rid;
     /**
      * Set the RecordId information for this tuple.
      *
@@ -49,7 +56,7 @@ public class Tuple implements Serializable {
      *            the new RecordId for this tuple.
      */
     public void setRecordId(RecordId rid) {
-        // some code goes here
+        this.rid = rid;
     }
 
     /**
@@ -61,7 +68,7 @@ public class Tuple implements Serializable {
      *            new value for the field.
      */
     public void setField(int i, Field f) {
-        // some code goes here
+        fieldList.add(i,f);
     }
 
     /**
@@ -71,8 +78,7 @@ public class Tuple implements Serializable {
      *            field index to return. Must be a valid index.
      */
     public Field getField(int i) {
-        // some code goes here
-        return null;
+        return fieldList.get(i);
     }
 
     /**
