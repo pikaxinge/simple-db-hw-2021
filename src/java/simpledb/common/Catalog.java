@@ -1,6 +1,5 @@
 package simpledb.common;
 
-import javafx.scene.control.Tab;
 import simpledb.storage.DbFile;
 import simpledb.storage.HeapFile;
 import simpledb.storage.TupleDesc;
@@ -10,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Catalog keeps track of all available tables in the database and their
@@ -43,7 +43,7 @@ public class Catalog {
         }
     }
 
-    private Map<String,TableDetail> storageMap = new HashMap<>();
+    private Map<String,TableDetail> storageMap = new ConcurrentHashMap<>();
     /**
      * Add a new table to the catalog.
      * This table's contents are stored in the specified DbFile.
@@ -57,7 +57,10 @@ public class Catalog {
         TableDetail t = new TableDetail(file,name,pkeyField);
         for (String key : storageMap.keySet()) {
             TableDetail tableDetail = storageMap.get(key);
-            if(tableDetail.id==t.id) return tableDetail.file.getTupleDesc();
+            if(tableDetail.id.equals(t.id)) {
+                System.out.println(tableDetail.id);
+                storageMap.remove(key);
+            };
         }
         storageMap.put(t.name,t);
     }

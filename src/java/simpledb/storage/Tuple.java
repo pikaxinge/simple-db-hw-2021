@@ -1,11 +1,9 @@
 package simpledb.storage;
 
-import org.w3c.dom.html.HTMLDirectoryElement;
 import simpledb.common.Type;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**

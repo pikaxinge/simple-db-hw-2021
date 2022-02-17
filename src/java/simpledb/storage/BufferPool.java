@@ -6,6 +6,7 @@ import simpledb.transaction.TransactionAbortedException;
 import simpledb.transaction.TransactionId;
 
 import java.io.*;
+import java.util.HashMap;
 
 /**
  * BufferPool manages the reading and writing of pages into memory from
@@ -29,13 +30,15 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
 
+    private static HashMap<PageId,Page> buffer = new HashMap<>(pageSize);
+
     /**
      * Creates a BufferPool that caches up to numPages pages.
      *
      * @param numPages maximum number of pages in this buffer pool.
      */
     public BufferPool(int numPages) {
-        // some code goes here
+        this.buffer = new HashMap<PageId,Page>(numPages);
     }
     
     public static int getPageSize() {
@@ -67,10 +70,19 @@ public class BufferPool {
      * @param pid the ID of the requested page
      * @param perm the requested permissions on the page
      */
-    public  Page getPage(TransactionId tid, PageId pid, Permissions perm)
+    public static Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
-        // some code goes here
-        return null;
+        if(perm==Permissions.READ_WRITE){
+            synchronized (tid){
+                if(!buffer.containsKey(pid)||buffer.get(pid).getPageData().length==4096){
+                    throw new DbException("eviction policy not found");
+                }
+                return buffer.get(pid);
+            }
+        }
+        else {
+            return buffer.get(pid);
+        }
     }
 
     /**

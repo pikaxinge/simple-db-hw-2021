@@ -44,8 +44,18 @@ public class TupleDesc implements Serializable {
      *        that are included in this TupleDesc
      * */
     public Iterator<TDItem> iterator() {
-        // some code goes here
-        return storageList.iterator();
+        return new Iterator<TDItem>() {
+            int i = 0;
+            @Override
+            public boolean hasNext() {
+                return (i+1)<storageList.size();
+            }
+
+            @Override
+            public TDItem next() {
+                return storageList.get(i++);
+            }
+        };
     }
 
     private static final long serialVersionUID = 1L;

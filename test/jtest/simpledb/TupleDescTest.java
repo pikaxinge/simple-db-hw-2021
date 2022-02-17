@@ -1,17 +1,16 @@
 package jtest.simpledb;
 
-import java.util.NoSuchElementException;
-
+import jtest.simpledb.systemtest.SimpleDbTestBase;
+import junit.framework.JUnit4TestAdapter;
+import org.junit.Assert;
 import org.junit.Test;
-
 import simpledb.common.Type;
 import simpledb.common.Utility;
 import simpledb.storage.TupleDesc;
-import jtest.simpledb.systemtest.SimpleDbTestBase;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
-import org.junit.Assert;
-import junit.framework.JUnit4TestAdapter;
 
 public class TupleDescTest extends SimpleDbTestBase {
 

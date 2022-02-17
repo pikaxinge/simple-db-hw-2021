@@ -1,12 +1,13 @@
 package simpledb.storage;
 
+import simpledb.common.Catalog;
 import simpledb.common.Database;
 import simpledb.common.DbException;
-import simpledb.common.Catalog;
 import simpledb.transaction.TransactionId;
 
-import java.util.*;
 import java.io.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Each instance of HeapPage stores data for one page of HeapFiles and 
@@ -71,9 +72,7 @@ public class HeapPage implements Page {
         @return the number of tuples on this page
     */
     private int getNumTuples() {        
-        // some code goes here
-        return 0;
-
+        return (int)Math.floor((float)(BufferPool.getPageSize()*8)/(td.getSize()*8+1));
     }
 
     /**
@@ -82,8 +81,7 @@ public class HeapPage implements Page {
      */
     private int getHeaderSize() {        
         
-        // some code goes here
-        return 0;
+        return this.getNumTuples()/8;
                  
     }
     
@@ -116,8 +114,7 @@ public class HeapPage implements Page {
      * @return the PageId associated with this page.
      */
     public HeapPageId getId() {
-    // some code goes here
-    throw new UnsupportedOperationException("implement this");
+        return this.pid;
     }
 
     /**
@@ -286,16 +283,20 @@ public class HeapPage implements Page {
      * Returns the number of empty slots on this page.
      */
     public int getNumEmptySlots() {
-        // some code goes here
-        return 0;
+        int count =0;
+        for(int i = 0 ;i<this.numSlots;i++){
+            count+=!isSlotUsed(i)?1:0;
+        }
+        return count;
     }
 
     /**
      * Returns true if associated slot on this page is filled.
      */
     public boolean isSlotUsed(int i) {
-        // some code goes here
-        return false;
+        int index = i / 8;
+        int offset = i % 8;
+        return (this.header[index] & (1 << offset)) != 0;
     }
 
     /**
@@ -311,8 +312,19 @@ public class HeapPage implements Page {
      * (note that this iterator shouldn't return tuples in empty slots!)
      */
     public Iterator<Tuple> iterator() {
-        // some code goes here
-        return null;
+        return new Iterator<Tuple>() {
+            int index = 0;
+            @Override
+            public boolean hasNext() {
+                while(index<numSlots&&!isSlotUsed(index)) index++;
+                return index<numSlots;
+            }
+
+            @Override
+            public Tuple next() {
+                return tuples[index++];
+            }
+        };
     }
 
 }

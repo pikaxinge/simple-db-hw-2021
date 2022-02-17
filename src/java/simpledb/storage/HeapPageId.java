@@ -2,6 +2,7 @@ package simpledb.storage;
 
 /** Unique identifier for HeapPage objects. */
 public class HeapPageId implements PageId {
+    private int tableId, pgNo;
 
     /**
      * Constructor. Create a page id structure for a specific page of a
@@ -11,13 +12,13 @@ public class HeapPageId implements PageId {
      * @param pgNo The page number in that table.
      */
     public HeapPageId(int tableId, int pgNo) {
-        // some code goes here
+        this.tableId = tableId;
+        this.pgNo = pgNo;
     }
 
     /** @return the table associated with this PageId */
     public int getTableId() {
-        // some code goes here
-        return 0;
+        return tableId;
     }
 
     /**
@@ -25,8 +26,7 @@ public class HeapPageId implements PageId {
      *   this PageId
      */
     public int getPageNumber() {
-        // some code goes here
-        return 0;
+        return this.pgNo;
     }
 
     /**
@@ -36,19 +36,37 @@ public class HeapPageId implements PageId {
      * @see BufferPool
      */
     public int hashCode() {
-        // some code goes here
-        throw new UnsupportedOperationException("implement this");
+        int result =12;
+        result = 31*result + this.pgNo;
+        return 31*result +this.tableId;
     }
 
     /**
-     * Compares one PageId to another.
+     * Compares one PageId to o.
      *
      * @param o The object to compare against (must be a PageId)
      * @return true if the objects are equal (e.g., page numbers and table
      *   ids are the same)
      */
     public boolean equals(Object o) {
-        // some code goes here
+        //先判断是不是自己,提高运行效率
+        if (this == o)
+            return true;
+
+        //再判断是不是Person类,提高代码的健壮性
+        if (o instanceof HeapPageId) {
+
+            //向下转型,父类无法调用子类的成员和方法
+            HeapPageId oPerson = (HeapPageId) o;
+
+            //最后判断类的所有属性是否相等，其中String类型和Object类型可以用相应的equals()来判断
+            if ((this.getTableId()==oPerson.getTableId()) && (this.getPageNumber() == oPerson.getPageNumber()))
+                return true;
+            }
+        else {
+            return false;
+        }
+
         return false;
     }
 

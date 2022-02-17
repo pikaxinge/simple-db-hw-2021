@@ -1,6 +1,7 @@
 package simpledb.storage;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A RecordId is a reference to a specific tuple on a specific page of a
@@ -9,7 +10,8 @@ import java.io.Serializable;
 public class RecordId implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    private PageId pid;
+    private int tupleno;
     /**
      * Creates a new RecordId referring to the specified PageId and tuple
      * number.
@@ -20,23 +22,22 @@ public class RecordId implements Serializable {
      *            the tuple number within the page.
      */
     public RecordId(PageId pid, int tupleno) {
-        // some code goes here
+        this.pid = pid;
+        this.tupleno = tupleno;
     }
 
     /**
      * @return the tuple number this RecordId references.
      */
     public int getTupleNumber() {
-        // some code goes here
-        return 0;
+        return this.tupleno;
     }
 
     /**
      * @return the page id this RecordId references.
      */
     public PageId getPageId() {
-        // some code goes here
-        return null;
+        return this.pid;
     }
 
     /**
@@ -47,8 +48,25 @@ public class RecordId implements Serializable {
      */
     @Override
     public boolean equals(Object o) {
-        // some code goes here
-        throw new UnsupportedOperationException("implement this");
+        //先判断是不是自己,提高运行效率
+        if (this == o)
+            return true;
+
+        //再判断是不是Person类,提高代码的健壮性
+        if (o instanceof RecordId) {
+
+            //向下转型,父类无法调用子类的成员和方法
+            RecordId oPerson = (RecordId) o;
+
+            //最后判断类的所有属性是否相等，其中String类型和Object类型可以用相应的equals()来判断
+            if ((this.getTupleNumber()==oPerson.getTupleNumber()) && (this.getPageId().equals(oPerson.getPageId())) )
+                return true;
+        }
+        else {
+            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -59,9 +77,7 @@ public class RecordId implements Serializable {
      */
     @Override
     public int hashCode() {
-        // some code goes here
-        throw new UnsupportedOperationException("implement this");
-
+        return  Objects.hash(pid,tupleno);
     }
 
 }
